@@ -5,11 +5,11 @@
 
 
 SRC_PATH="./src/main.c"
-EXE_NAME="test"
+EXE_NAME="GetBack"
 
 CC="gcc"
 FLAGS="-std=c11 -g -DDEBUG -W -Wall -Wextra -Wno-missing-braces -Wno-variadic-macros -rdynamic"
-LINKERS="-lfreetype -lglfw -lSDL2 -lGLEW -lGLU -lGL -lm"
+LINKERS="-lfreetype -lSDL2 -lGLEW -lGLU -lGL -lm -lassimp"
 INCLUDES="-I/usr/include/freetype2 -I./lib/"
 
 
@@ -35,6 +35,12 @@ function cleanup_envirnoment {
     ulimit -c 0
 }
 
+function generating_complie_commands_json {
+    local FILE_PATH="$1"
+    echo -e "[*] Generating complie_commands.json file ..."
+    bear -- $CC $FILE_PATH $FLAGS $INCLUDES $LINKERS -o ./bin/$EXE_NAME
+    echo -e "[!] Done"
+}
 
 function compile_in_linux {
 
@@ -128,6 +134,9 @@ function main {
     else 
         echo -e "[!] ${green}Found directory ${reset}\`$LIB_DIR\`" 
     fi
+
+    # Generating file for Lsp
+    generating_complie_commands_json $SRC_PATH 
 
     # Compiling source files
     echo -e "[*] ${blue}Compiling source file ...${reset}"
