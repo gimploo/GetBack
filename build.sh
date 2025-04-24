@@ -5,7 +5,7 @@
 
 
 SRC_PATH="./src/main.c"
-EXE_NAME="GetBack"
+EXE_NAME="test"
 
 CC="gcc"
 FLAGS="-std=c11 -g -DDEBUG -W -Wall -Wextra -Wno-missing-braces -Wno-variadic-macros -rdynamic"
@@ -23,6 +23,7 @@ green=$(tput bold; tput setaf 2)
 blue=$(tput bold; tput setaf 4)
 reset=$(tput sgr0)
 
+
 function setup_envirnoment {
 
     rm -rf core
@@ -35,18 +36,12 @@ function cleanup_envirnoment {
     ulimit -c 0
 }
 
-function generating_complie_commands_json {
-    local FILE_PATH="$1"
-    echo -e "[*] Generating complie_commands.json file ..."
-    bear -- $CC $FILE_PATH $FLAGS $INCLUDES $LINKERS -o ./bin/$EXE_NAME
-    echo -e "[!] Done"
-}
 
 function compile_in_linux {
 
     local FILE_PATH="$1"
 
-    $CC $FILE_PATH $FLAGS $INCLUDES $LINKERS -o ./bin/$EXE_NAME
+    bear -- $CC $FILE_PATH $FLAGS $INCLUDES $LINKERS -o ./bin/$EXE_NAME
 
 }
 
@@ -69,12 +64,7 @@ function run_profiler {
     time ./bin/$EXE_NAME
 }
 
-function main {
-
-    if [ "$1" == "help" ] 
-    then
-        echo -e "
-
+help_message=$(cat <<EOF
         Usage: ./build.sh <tag>
 
         Builds the project using gcc or specified compiler
@@ -82,15 +72,19 @@ function main {
         Types of tags
         -------------
             help    - prints the usage
+            build   - only compiles program
             run     - compiles and runs the program
             debug   - runs the executable in a debugger after compilation
+EOF
+)
 
-        "
+function main {
+
+    if [ "$1" == "help" ] 
+    then
+        echo -e "$help_message"
         exit 0
     fi
-
-
-    echo " "
 
     local BIN_DIR="./bin"
     local LIB_DIR="./lib"
@@ -104,6 +98,18 @@ function main {
         rm -f core
 
         echo " "
+        exit 0
+    fi
+
+    if [ "$1" != "build" ] && [ "$1" != "run" ] && [ "$1" != "debug" ]
+    then
+        echo -e "$help_message"
+        exit 0
+    fi
+
+    if [ ! -d .git ]
+    then
+        echo "[!] Run within a C project (coudnt find .git folder here)"
         exit 0
     fi
 
@@ -134,9 +140,6 @@ function main {
     else 
         echo -e "[!] ${green}Found directory ${reset}\`$LIB_DIR\`" 
     fi
-
-    # Generating file for Lsp
-    generating_complie_commands_json $SRC_PATH 
 
     # Compiling source files
     echo -e "[*] ${blue}Compiling source file ...${reset}"

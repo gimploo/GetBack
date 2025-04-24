@@ -1,3 +1,4 @@
 .cache/clangd/index
 bin
 lib/poglib
+compile_commands.json
