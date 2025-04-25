@@ -5,9 +5,9 @@
 
 
 SRC_PATH="./src/main.c"
-EXE_NAME="test"
+EXE_NAME="GetBack"
 
-CC="gcc"
+CC="clang"
 FLAGS="-std=c11 -g -DDEBUG -W -Wall -Wextra -Wno-missing-braces -Wno-variadic-macros -rdynamic"
 LINKERS="-lfreetype -lSDL2 -lGLEW -lGLU -lGL -lm -lassimp"
 INCLUDES="-I/usr/include/freetype2 -I./lib/"
