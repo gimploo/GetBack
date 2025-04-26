@@ -18,10 +18,10 @@ reaching the goal of reaching his old self
 * linear story 
 
 
-## Deadline: 1 month
+> DEADLINE: 1 month :fire:
 
-Challenge
-> C11 engine Custom engine 
+# Challenge
+C11 engine Custom engine 
 
 
 ## TODO: 
