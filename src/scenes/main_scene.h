@@ -6,7 +6,9 @@
 typedef struct {
     glshader_t shader;
     glcamera_t camera;
-    vec3f_t platormPosition;
+    glmodel_t model;
+    matrix4f_t platform_transform;
+    matrix4f_t model_transform;
 } main_scene_t;
 
 void main_scene_init(struct scene_t * s)
@@ -16,8 +18,11 @@ void main_scene_init(struct scene_t * s)
         &(main_scene_t ) {
             .shader = glshader_from_cstr_init(SHADER3D_VS, SHADER3D_FS),
             .camera = glcamera_perspective(
-                (vec3f_t ){8.0f, 16.0f, 36.0f},
-                (vec2f_t ){radians(0), radians(-40)}), 
+                (vec3f_t ){ 8.0f, 16.0f, 36.0f },
+                (vec2f_t ){ radians(0), radians(-40) }), 
+            .platform_transform = glms_scale(MATRIX4F_IDENTITY, (vec3f_t){20.0f, 1.0f, 20.0f}),
+            .model_transform = glms_scale(MATRIX4F_IDENTITY, (vec3f_t){20.0f, 20.0f, 20.0f}),
+            .model = glmodel_init("C:\\Users\\Gokul\\projects\\GetBack\\res\\male-model.glb")
         },
         sizeof(main_scene_t));
 }
@@ -27,82 +32,116 @@ void main_scene_input(struct scene_t *s, const f32 dt)
     window_t *win = poggen_get_window(scene_get_engine());
     main_scene_t *content = s->content;
 
-    if (window_keyboard_is_key_just_pressed(win, SDLK_UP))
-    {
-        content->platormPosition.z -= 0.5f * dt; 
-    }
-
-    if (window_keyboard_is_key_just_pressed(win, SDLK_DOWN))
-    {
-        content->platormPosition.z += 0.5f * dt; 
-    }
+    glcamera_process_input(&content->camera, dt);
 }
 
-void main_scene_update(struct scene_t *s, const f32 dt)
+void main_scene_update(struct scene_t *s, const f32 dt) { }
+
+glrendercall_t get_platform_render_config(main_scene_t *game)
 {
+    return (glrendercall_t ){
+        .shader_config = {
+            .shader = &game->shader,
+            .uniforms = {
+                .count = 3,
+                .uniform = {
+                    [0] = {
+                        .name = "view",
+                        .type = "matrix4f_t",
+                        .value = glcamera_getview(&game->camera)
+                    },
+                    [1] = {
+                        .name = "projection",
+                        .type = "matrix4f_t",
+                        .value = glms_perspective(
+                            radians(45), 
+                            global_poggen->handle.app->window.aspect_ratio, 
+                            1.0f, 1000.0f
+                        )
+                    },
+                    [2] = {
+                        .name = "transform",
+                        .type = "matrix4f_t",
+                        .value = game->platform_transform
+                    },
+                }
+            }
+        },
+        .vtx = {
+            .data = (u8 *)CUBE_VERTICES,
+            .size = sizeof(CUBE_VERTICES)
+        },
+        .idx = {
+            .data = (u8 *)CUBE_INDICES,
+            .nmemb = ARRAY_LEN(CUBE_INDICES)
+        },
+        .attrs = {
+            .count = 1,
+            .attr = {
+                [0] = {
+                    .ncmp = 3,
+                    .interleaved = {0} 
+                }
+            },
+
+        },
+        .textures = {0},
+    };
+}
+
+void render_model(main_scene_t *game)
+{
+    glrenderer3d_draw_model(
+        &game->model,
+        (glshaderconfig_t) {
+            .shader = &game->shader,
+            .uniforms = {
+                .count = 3,
+                .uniform = {
+                    [0] = {
+                        .name = "view",
+                        .type = "matrix4f_t",
+                        .value = glcamera_getview(&game->camera)
+                    },
+                    [1] = {
+                        .name = "projection",
+                        .type = "matrix4f_t",
+                        .value = glms_perspective(
+                            radians(45), 
+                            global_poggen->handle.app->window.aspect_ratio, 
+                            1.0f, 1000.0f
+                        )
+                    },
+                    [2] = {
+                        .name = "transform",
+                        .type = "matrix4f_t",
+                        .value = game->model_transform
+                    },
+                }
+            }
+        }
+    );
 }
 
 void main_scene_render(struct scene_t *s)
 {
-    const main_scene_t *game = (const main_scene_t *)s->content;
+    main_scene_t *game = (main_scene_t *)s->content;
 
     glrenderer3d_draw((glrendererconfig_t) {
         .calls = {
             .count = 1,
             .call = {
-                [0] = {
-                    .shader = &game->shader,
-                    .vtx = {
-                        .data = CUBE_VERTICES,
-                        .size = sizeof(CUBE_VERTICES)
-                    },
-                    .idx = {
-                        .data = CUBE_INDICES,
-                        .nmemb = ARRAY_LEN(CUBE_INDICES)
-                    },
-                    .attrs = {
-                        .count = 1,
-                        .attr = {
-                            [0] = {
-                                .ncmp = 3,
-                                .interleaved = {0} 
-                            }
-                        },
-
-                    },
-                    .textures = {0},
-                    .uniforms = {
-                        .count = 3,
-                        .uniform = {
-                            [0] = {
-                                .name = "view",
-                                .type = "matrix4f_t",
-                                .value = glcamera_getview(&game->camera)
-                            },
-                            [1] = {
-                                .name = "projection",
-                                .type = "matrix4f_t",
-                                .value = glms_perspective(
-                                    radians(45), 
-                                    global_poggen->handle.app->window.aspect_ratio, 
-                                    1.0f, 1000.0f
-                                )
-                            },
-                            [2] = {
-                                .name = "transform",
-                                .type = "matrix4f_t",
-                                .value = matrix4f_translation(game->platormPosition)
-                            },
-                        }
-                    }
-                }
+                [0] = get_platform_render_config(game)
             }
         }
     });
+
+    render_model(game);
 }
 
-void main_scene_destroy(struct scene_t *s)
+void main_scene_destroy(scene_t *s)
 {
-    main_scene_t *game = (const main_scene_t *)s->content;
+    main_scene_t *game = (main_scene_t *)s->content;
+    glmodel_destroy(&game->model);
     glshader_destroy(&game->shader);
 }

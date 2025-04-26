@@ -28,7 +28,10 @@ Challenge
 TODO:
 =====
 
-[ ] Implement a flat platform and load basic humanoid model on top of it
+[x] Implement a flat platform and load basic humanoid model on top of it
+    [x] Load platform
+    [x] Load humanoid model
+[ ] Get camera working - looking around is an absolute mess
 [ ] Implement Kinematic motion control of loaded modal
 [ ] Implement a camera that follows the modal
 
