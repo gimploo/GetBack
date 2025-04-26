@@ -47,8 +47,11 @@ void GetBack_destroy(application_t *app)
     poggen_destroy(c->game.engine);
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
+    (void)argc;
+    (void)argv;
+
     application_t app = {
         .window = {
             .title              = "GetBack",

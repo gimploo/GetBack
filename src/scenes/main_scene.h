@@ -56,6 +56,10 @@ void main_scene_render(struct scene_t *s)
                         .data = CUBE_VERTICES,
                         .size = sizeof(CUBE_VERTICES)
                     },
+                    .idx = {
+                        .data = CUBE_INDICES,
+                        .nmemb = ARRAY_LEN(CUBE_INDICES)
+                    },
                     .attrs = {
                         .count = 1,
                         .attr = {
