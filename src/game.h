@@ -10,7 +10,11 @@ typedef struct GetBack {
 
 const char * SHADER3D_VS = 
     "#version 330 core\n"
-    "layout (location = 0) in vec3 vertexPosition;\n"
+    "layout (location = 0) in vec3 vertices;\n"
+    "layout (location = 1) in vec3 normal;\n"
+    "layout (location = 2) in vec2 uv;\n"
+
+    "out vec2 frag_uv;"
 
     "uniform mat4 view;\n"
     "uniform mat4 projection;\n"
@@ -18,16 +22,32 @@ const char * SHADER3D_VS =
 
     "void main()\n"
     "{\n"
-    "   gl_Position = projection * view * transform * vec4(vertexPosition, 1.0);\n"
+    "   frag_uv = uv;"
+    "   gl_Position = projection * view * transform * vec4(vertices, 1.0);\n"
     "}\n";
 
 const char *SHADER3D_FS = 
     "#version 330 core\n"
     "out vec4 FragColor;\n"
 
+    "uniform vec4 color;"
+
     "void main()\n"
     "{\n"
-    "       FragColor = vec4(0.3f, 0.2f, 0.4f, 1.0f);\n"
+    "       FragColor = color;\n"
+    "}\n";
+
+const char *SHADER3D_MODEL_FS = 
+    "#version 330 core\n"
+    "out vec4 FragColor;\n"
+
+    "in vec2 frag_uv;"
+
+    "uniform vec4 diffuse_color;"
+
+    "void main()\n"
+    "{\n"
+    "       FragColor = diffuse_color;\n"
     "}\n";
 
 

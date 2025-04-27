@@ -4,7 +4,8 @@
 #include "../game.h"
 
 typedef struct {
-    glshader_t shader;
+    glshader_t general_shader;
+    glshader_t model_shader;
     glcamera_t camera;
     glmodel_t model;
     matrix4f_t platform_transform;
@@ -16,7 +17,8 @@ void main_scene_init(struct scene_t * s)
     scene_pass_content(
         s,
         &(main_scene_t ) {
-            .shader = glshader_from_cstr_init(SHADER3D_VS, SHADER3D_FS),
+            .general_shader = glshader_from_cstr_init(SHADER3D_VS, SHADER3D_FS),
+            .model_shader = glshader_from_cstr_init(SHADER3D_VS, SHADER3D_MODEL_FS),
             .camera = glcamera_perspective(
                 (vec3f_t ){ 8.0f, 16.0f, 36.0f },
                 (vec2f_t ){ radians(0), radians(-40) }), 
@@ -41,9 +43,9 @@ glrendercall_t get_platform_render_config(main_scene_t *game)
 {
     return (glrendercall_t ){
         .shader_config = {
-            .shader = &game->shader,
+            .shader = &game->general_shader,
             .uniforms = {
-                .count = 3,
+                .count = 4,
                 .uniform = {
                     [0] = {
                         .name = "view",
@@ -64,6 +66,11 @@ glrendercall_t get_platform_render_config(main_scene_t *game)
                         .type = "matrix4f_t",
                         .value = game->platform_transform
                     },
+                    [3] = {
+                        .name = "color",
+                        .type = "vec4f_t",
+                        .value.vec4 = (vec4f_t) {0.2f, 0.3f, 0.4f, 1.0f }
+                    }
                 }
             }
         },
@@ -104,31 +111,74 @@ void main_scene_render(struct scene_t *s)
 
     glrenderer3d_draw_model(
         &game->model,
-        (glshaderconfig_t) {
-            .shader = &game->shader,
-            .uniforms = {
-                .count = 3,
-                .uniform = {
-                    [0] = {
-                        .name = "view",
-                        .type = "matrix4f_t",
-                        .value = glcamera_getview(&game->camera)
-                    },
-                    [1] = {
-                        .name = "projection",
-                        .type = "matrix4f_t",
-                        .value = glms_perspective(
-                            radians(45), 
-                            global_poggen->handle.app->window.aspect_ratio, 
-                            1.0f, 1000.0f
-                        )
-                    },
-                    [2] = {
-                        .name = "transform",
-                        .type = "matrix4f_t",
-                        .value = game->model_transform
-                    },
+        (glshaderconfiglist_t) {
+            .count = 2,
+            .configs = {
+                [0] = (glshaderconfig_t ){
+                    .shader = &game->model_shader,
+                    .uniforms = {
+                        .count = 4,
+                        .uniform = {
+                            [0] = {
+                                .name = "view",
+                                .type = "matrix4f_t",
+                                .value = glcamera_getview(&game->camera)
+                            },
+                            [1] = {
+                                .name = "projection",
+                                .type = "matrix4f_t",
+                                .value = glms_perspective(
+                                    radians(45), 
+                                    global_poggen->handle.app->window.aspect_ratio, 
+                                    1.0f, 1000.0f
+                                )
+                            },
+                            [2] = {
+                                .name = "transform",
+                                .type = "matrix4f_t",
+                                .value = game->model_transform
+                            },
+                            [3] = {
+                                .name = "diffuse_color",
+                                .type = "vec4f_t",
+                                .value.vec4 = *(vec4f_t *)list_get_value(&game->model.colors, 0)
+                            }
+                        }
+                    }
+                },
+                [1] = (glshaderconfig_t ) {
+                    .shader = &game->model_shader,
+                    .uniforms = {
+                        .count = 4,
+                        .uniform = {
+                            [0] = {
+                                .name = "view",
+                                .type = "matrix4f_t",
+                                .value = glcamera_getview(&game->camera)
+                            },
+                            [1] = {
+                                .name = "projection",
+                                .type = "matrix4f_t",
+                                .value = glms_perspective(
+                                    radians(45), 
+                                    global_poggen->handle.app->window.aspect_ratio, 
+                                    1.0f, 1000.0f
+                                )
+                            },
+                            [2] = {
+                                .name = "transform",
+                                .type = "matrix4f_t",
+                                .value = game->model_transform
+                            },
+                            [3] = {
+                                .name = "diffuse_color",
+                                .type = "vec4f_t",
+                                .value.vec4 = *(vec4f_t *)list_get_value(&game->model.colors, 1)
+                            }
+                        }
+                    }
                 }
+
             }
         }
     );
@@ -138,5 +188,6 @@ void main_scene_destroy(scene_t *s)
 {
     main_scene_t *game = (main_scene_t *)s->content;
     glmodel_destroy(&game->model);
-    glshader_destroy(&game->shader);
+    glshader_destroy(&game->model_shader);
+    glshader_destroy(&game->general_shader);
 }

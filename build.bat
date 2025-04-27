@@ -11,7 +11,7 @@ set GLFW_URL=https://github.com/glfw/glfw/releases/download/3.3.8/glfw-3.3.8.bin
 set SDL2_URL=https://www.libsdl.org/release/SDL2-devel-2.0.20-VC.zip
 set GLEW_URL=https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0-win32.zip
 set FREETYPE_URL=https://github.com/ubawurinna/freetype-windows-binaries/archive/refs/heads/master.zip
-set POGLIB_URL=https://github.com/gimploo/poglib/archive/refs/heads/main.zip
+set POGLIB_URL=https://github.com/gimploo/poglib/archive/refs/heads/dev-fixes.zip
 
 
 REM Include compiler of choice (here its msvc)
@@ -55,9 +55,12 @@ set EXE_FILE_NAME=GetBack.exe
     ) else (
         echo [!] `lib` directory not found!
         echo [*] Checking dependenices ...
-        call :check_dependencies_are_installed
+        call :check_dependencies_are_installed && (
+            echo [!] Dependencies all installed !
+        ) || (
+            echo [!] Error installing dependencies !
+            goto :end
         )
-        echo [!] Dependencies all found!
     )
 
     echo [*] Checking for `bin` folder ...
@@ -200,6 +203,8 @@ REM ============================================================================
         )
         if exist poglib (
             copy poglib\external\assimp\lib\Debug\assimp-vc143-mtd.dll ..\%EXE_FOLDER_DEFAULT_PATH% >nul
+
+            copy poglib\external\assimp\lib\Debug\assimp-vc143-mtd.pdb ..\%EXE_FOLDER_DEFAULT_PATH% >nul
         )
     popd
 
