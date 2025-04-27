@@ -1,9 +1,12 @@
 .cache/clangd/index
 bin
-/lib
-!/lib/poglib
-!/lib/poglib/**
 compile_commands.json
 main.i
 .vscode
 **/dbg_mem_log.txt
+.vs
+lib/FREETYPE
+lib/GLEW
+lib/GLFW
+lib/SDL2
+lib/assimp

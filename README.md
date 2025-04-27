@@ -30,6 +30,11 @@ C11 engine Custom engine
     - [x] Load platform
     - [x] Load humanoid model
 - [x] Get camera working - looking around is an absolute mess
-- [ ] Implement Kinematic motion control of loaded modal
+- [ ] Implement Kinematic motion control system modal
+- [ ] Implement movement for the model
 - [ ] Implement a camera that follows the modal
+- [ ] Design a GUI library (good one)
+- [ ] Helper UI in debug mode
+    - [ ] Axis directions
+    - [ ] Object selection with translation and rotation
 

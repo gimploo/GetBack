@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
             .height             = 920,
             .aspect_ratio       = 1080.f / 920.f,
             .fps_limit          = 60,
-            .background_color   = COLOR_GREEN
+            .background_color   = COLOR_NOT_AS_BRIGHT_AS_WHITE
         },   
         .content = {
             .size = sizeof(content_t )

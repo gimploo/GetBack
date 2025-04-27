@@ -8,7 +8,6 @@ typedef struct {
     glshader_t model_shader;
     glcamera_t camera;
     glmodel_t model;
-    matrix4f_t platform_transform;
     matrix4f_t model_transform;
 } main_scene_t;
 
@@ -22,7 +21,6 @@ void main_scene_init(struct scene_t * s)
             .camera = glcamera_perspective(
                 (vec3f_t ){ 8.0f, 16.0f, 36.0f },
                 (vec2f_t ){ radians(0), radians(-40) }), 
-            .platform_transform = glms_scale(MATRIX4F_IDENTITY, (vec3f_t){20.0f, 1.0f, 20.0f}),
             .model_transform = glms_scale(MATRIX4F_IDENTITY, (vec3f_t){20.0f, 20.0f, 20.0f}),
             .model = glmodel_init("C:\\Users\\Gokul\\projects\\GetBack\\res\\male-model.glb")
         },
@@ -64,12 +62,12 @@ glrendercall_t get_platform_render_config(main_scene_t *game)
                     [2] = {
                         .name = "transform",
                         .type = "matrix4f_t",
-                        .value = game->platform_transform
+                        .value = glms_scale(MATRIX4F_IDENTITY, (vec3f_t){30.0f, 1.0f, 30.0f}),
                     },
                     [3] = {
                         .name = "color",
                         .type = "vec4f_t",
-                        .value.vec4 = (vec4f_t) {0.2f, 0.3f, 0.4f, 1.0f }
+                        .value.vec4 = COLOR_DARK_GRAY
                     }
                 }
             }
