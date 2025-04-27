@@ -89,8 +89,19 @@ glrendercall_t get_platform_render_config(main_scene_t *game)
     };
 }
 
-void render_model(main_scene_t *game)
+void main_scene_render(struct scene_t *s)
 {
+    main_scene_t *game = (main_scene_t *)s->content;
+
+    glrenderer3d_draw((glrendererconfig_t) {
+        .calls = {
+            .count = 1,
+            .call = {
+                [0] = get_platform_render_config(game)
+            }
+        }
+    });
+
     glrenderer3d_draw_model(
         &game->model,
         (glshaderconfig_t) {
@@ -121,22 +132,6 @@ void render_model(main_scene_t *game)
             }
         }
     );
-}
-
-void main_scene_render(struct scene_t *s)
-{
-    main_scene_t *game = (main_scene_t *)s->content;
-
-    glrenderer3d_draw((glrendererconfig_t) {
-        .calls = {
-            .count = 1,
-            .call = {
-                [0] = get_platform_render_config(game)
-            }
-        }
-    });
-
-    render_model(game);
 }
 
 void main_scene_destroy(scene_t *s)
