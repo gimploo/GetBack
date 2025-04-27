@@ -62,7 +62,7 @@ glrendercall_t get_platform_render_config(main_scene_t *game)
                     [2] = {
                         .name = "transform",
                         .type = "matrix4f_t",
-                        .value = glms_scale(MATRIX4F_IDENTITY, (vec3f_t){30.0f, 1.0f, 30.0f}),
+                        .value = glms_scale(MATRIX4F_IDENTITY, (vec3f_t){1000.0f, 1.0f, 1000.0f}),
                     },
                     [3] = {
                         .name = "color",
