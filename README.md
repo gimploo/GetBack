@@ -31,6 +31,7 @@ C11 engine Custom engine
     - [x] Load humanoid model
 - [x] Get camera working - looking around is an absolute mess
 - [ ] Implement Kinematic motion control system modal
+    - [ ] Implement a better hashtable (round robin hashing) - blocker
 - [ ] Implement movement for the model
 - [ ] Implement a camera that follows the modal
 - [ ] Design a GUI library (good one)
