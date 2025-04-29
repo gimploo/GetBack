@@ -32,8 +32,11 @@ C11 engine Custom engine
 - [x] Get camera working - looking around is an absolute mess
 - [ ] Implement Kinematic motion control system modal
     - [ ] Implement a better hashtable (round robin hashing) - blocker
-- [ ] Implement movement for the model
-- [ ] Implement a camera that follows the modal
+    - [ ] Load bones and weights
+    - [ ] Setup Debug view of the bones and weights 
+    - [ ] Setup animation system for the model
+    - [ ] Implement movement for the model
+    - [ ] Implement a camera that follows the modal
 - [ ] Design a GUI library (good one)
 - [ ] Helper UI in debug mode
     - [ ] Axis directions
