@@ -38,3 +38,6 @@ C11 engine Custom engine
     - [ ] Axis directions
     - [ ] Object selection with translation and rotation
 
+## Bugs
+- [ ] Poggen: Relative paths doesnt work with ASSIMP, (possible fix is to write a wrapper around on how filepath are given to functions)
+

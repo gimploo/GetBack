@@ -13,6 +13,12 @@ typedef struct {
 
 void main_scene_init(struct scene_t * s)
 {
+#ifdef _WIN64
+    const char *model_file_path = "C:\\Users\\Gokul\\projects\\GetBack\\res\\male-model.glb";
+#else
+    const char *model_file_path = "/home/simploo/dev/projects/GetBack/res/male-model.glb";
+#endif
+
     scene_pass_content(
         s,
         &(main_scene_t ) {
@@ -22,7 +28,7 @@ void main_scene_init(struct scene_t * s)
                 (vec3f_t ){ 8.0f, 16.0f, 36.0f },
                 (vec2f_t ){ radians(0), radians(-40) }), 
             .model_transform = glms_scale(MATRIX4F_IDENTITY, (vec3f_t){20.0f, 20.0f, 20.0f}),
-            .model = glmodel_init("C:\\Users\\Gokul\\projects\\GetBack\\res\\male-model.glb")
+            .model = glmodel_init(model_file_path)
         },
         sizeof(main_scene_t));
 }
