@@ -1,0 +1,3 @@
+[submodule "lib/poglib"]
+	path = lib/poglib
+	url = https://github.com/gimploo/poglib
