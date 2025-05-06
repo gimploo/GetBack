@@ -37,7 +37,7 @@ linux   -> ./build.sh run
     - [x] Load humanoid model
 - [x] Get camera working - looking around is an absolute mess
 - [ ] Implement Kinematic motion control system modal
-    - [ ] Implement a better hashtable (round robin hashing) - blocker
+    - [x] Implement a better hashtable (round robin hashing) - blocker
     - [ ] Load bones and weights
     - [ ] Setup Debug view of the bones and weights 
     - [ ] Setup animation system for the model
