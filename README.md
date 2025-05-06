@@ -23,6 +23,12 @@ reaching the goal of reaching his old self
 # Challenge
 C11 engine Custom engine 
 
+# Build project
+git clone <this repo url>
+git submodule update --init --recursive
+windows -> ./build.bat run
+linux   -> ./build.sh run
+
 
 ## TODO: 
 
@@ -41,6 +47,7 @@ C11 engine Custom engine
 - [ ] Helper UI in debug mode
     - [ ] Axis directions
     - [ ] Object selection with translation and rotation
+- [ ] Arena allocator for better memory lookup
 
 ## Bugs
 - [ ] Poggen: Relative paths doesnt work with ASSIMP, (possible fix is to write a wrapper around on how filepath are given to functions)
