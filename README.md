@@ -38,9 +38,9 @@ linux   -> ./build.sh run
 - [x] Get camera working - looking around is an absolute mess
 - [ ] Implement Kinematic motion control system modal
     - [x] Implement a better hashtable (round robin hashing) - blocker
-    - [ ] Load bones and weights
-    - [ ] Setup Debug view of the bones and weights 
+    - [x] Load bones and weights
     - [ ] Setup animation system for the model
+    - [ ] Setup Debug view of the bones and weights 
     - [ ] Implement movement for the model
     - [ ] Implement a camera that follows the modal
 - [ ] Design a GUI library (good one)
