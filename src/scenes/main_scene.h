@@ -23,7 +23,7 @@ void main_scene_init(struct scene_t * s)
         s,
         &(main_scene_t ) {
             .general_shader = glshader_from_cstr_init(SHADER3D_VS, SHADER3D_FS),
-            .model_shader = glshader_from_cstr_init(SHADER3D_VS, SHADER3D_MODEL_FS),
+            .model_shader = glshader_from_cstr_init(SHADER3D_MODEL_VS, SHADER3D_MODEL_FS),
             .camera = glcamera_perspective(
                 (vec3f_t ){ 8.0f, 16.0f, 36.0f },
                 (vec2f_t ){ radians(0), radians(-40) }), 
@@ -100,7 +100,7 @@ glrendercall_t get_platform_render_config(main_scene_t *game)
     };
 }
 
-void main_scene_render(struct scene_t *s)
+void main_scene_render(struct scene_t *s, const f32 dt)
 {
     main_scene_t *game = (main_scene_t *)s->content;
 
@@ -121,7 +121,7 @@ void main_scene_render(struct scene_t *s)
                 [0] = (glshaderconfig_t ){
                     .shader = &game->model_shader,
                     .uniforms = {
-                        .count = 4,
+                        .count = 5,
                         .uniform = {
                             [0] = {
                                 .name = "view",
@@ -146,6 +146,14 @@ void main_scene_render(struct scene_t *s)
                                 .name = "diffuse_color",
                                 .type = "vec4f_t",
                                 .value.vec4 = *(vec4f_t *)list_get_value(&game->model.colors, 0)
+                            },
+                            [4] = {
+                                .name = "uBones",
+                                .type = "matrix4f_t []",
+                                .value.mat4s = {
+                                    .count = game->model.transforms[0].len,
+                                    .data = (matrix4f_t *)game->model.transforms[0].data
+                                }
                             }
                         }
                     }
@@ -153,7 +161,7 @@ void main_scene_render(struct scene_t *s)
                 [1] = (glshaderconfig_t ) {
                     .shader = &game->model_shader,
                     .uniforms = {
-                        .count = 4,
+                        .count = 5,
                         .uniform = {
                             [0] = {
                                 .name = "view",
@@ -178,6 +186,14 @@ void main_scene_render(struct scene_t *s)
                                 .name = "diffuse_color",
                                 .type = "vec4f_t",
                                 .value.vec4 = *(vec4f_t *)list_get_value(&game->model.colors, 1)
+                            },
+                            [4] = {
+                                .name = "uBones",
+                                .type = "matrix4f_t []",
+                                .value.mat4s = {
+                                    .count = game->model.transforms[1].len,
+                                    .data = (matrix4f_t *)game->model.transforms[1].data
+                                }
                             }
                         }
                     }
@@ -186,6 +202,7 @@ void main_scene_render(struct scene_t *s)
             }
         }
     );
+
 }
 
 void main_scene_destroy(scene_t *s)

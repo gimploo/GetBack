@@ -1,4 +1,5 @@
 #define WINDOW_SDL
+#define DISABLE_CAMERA_LOGGING
 #include <poglib/application.h>
 #include "game.h"
 #include "scenes/main_scene.h"
@@ -36,7 +37,7 @@ void GetBack_render(application_t *app)
     window_t *win = application_get_window(app);
     content_t *c = application_get_content(app);
 
-    poggen_render(c->game.engine);
+    poggen_render(c->game.engine, application_get_dt(app));
 }
 
 void GetBack_destroy(application_t *app) 
