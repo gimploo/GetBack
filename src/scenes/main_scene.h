@@ -41,7 +41,11 @@ void main_scene_input(struct scene_t *s, const f32 dt)
     glcamera_process_input(&content->camera, dt);
 }
 
-void main_scene_update(struct scene_t *s, const f32 dt) { }
+void main_scene_update(struct scene_t *s, const f32 dt) 
+{ 
+    main_scene_t *content = s->content;
+    glmodel_set_animation(&content->model, "Idle_Loop", dt);
+}
 
 glrendercall_t get_platform_render_config(main_scene_t *game)
 {
@@ -113,6 +117,7 @@ void main_scene_render(struct scene_t *s, const f32 dt)
         }
     });
 
+    const u32 model_uniform_count = 5;
     glrenderer3d_draw_model(
         &game->model,
         (glshaderconfiglist_t) {
@@ -121,7 +126,7 @@ void main_scene_render(struct scene_t *s, const f32 dt)
                 [0] = (glshaderconfig_t ){
                     .shader = &game->model_shader,
                     .uniforms = {
-                        .count = 5,
+                        .count = model_uniform_count,
                         .uniform = {
                             [0] = {
                                 .name = "view",
@@ -161,7 +166,7 @@ void main_scene_render(struct scene_t *s, const f32 dt)
                 [1] = (glshaderconfig_t ) {
                     .shader = &game->model_shader,
                     .uniforms = {
-                        .count = 5,
+                        .count = model_uniform_count,
                         .uniform = {
                             [0] = {
                                 .name = "view",
