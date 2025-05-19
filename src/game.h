@@ -36,11 +36,6 @@ const char *SHADER3D_MODEL_VS =
     "layout (location = 5) in ivec4 boneIds;\n"
     "layout (location = 6) in vec4 boneWeights;\n"
 
-    "out vec3 vNormal;"
-    "out vec2 vUV;"
-    "out vec3 vTangents;"
-    "out vec3 vBitTan;"
-
     "uniform mat4 view;\n"
     "uniform mat4 projection;\n"
     "uniform mat4 transform;\n"
@@ -48,15 +43,12 @@ const char *SHADER3D_MODEL_VS =
 
     "void main()\n"
     "{\n"
-    "    mat4 bonetransform = uBones[boneIds[0]] * boneWeights[0];"
-    "    bonetransform += uBones[boneIds[1]] * boneWeights[1];"
-    "    bonetransform += uBones[boneIds[2]] * boneWeights[2];"
-    "    bonetransform += uBones[boneIds[3]] * boneWeights[3];"
-    "vNormal =normal;"
-    "vUV = uv;"
-    "vTangents = tangents;"
-    "vBitTan = bitangents;"
-    "    vec4 pos = bonetransform * vec4(vertices, 1.0);"
+    "    vec4 pos = vec4(0.0);"
+    "    for(int i = 0; i < 4; i++) {"
+    "       if(boneIds[i] > 0) {"
+    "           pos += uBones[boneIds[i]] * vec4(vertices, 1.0) * boneWeights[i];"
+    "       }"
+    "    }"
     "    gl_Position = projection * view * transform * pos;"
     "}\n";
 
