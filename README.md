@@ -39,7 +39,7 @@ linux   -> ./build.sh run
 - [ ] Implement Kinematic motion control system modal
     - [x] Implement a better hashtable (round robin hashing) - blocker
     - [x] Load bones and weights
-    - [ ] Setup animation system for the model
+    - [x] Setup animation system for the model
     - [ ] Setup Debug view of the bones and weights 
     - [ ] Implement movement for the model
     - [ ] Implement a camera that follows the modal
