@@ -1,5 +1,4 @@
 #define WINDOW_SDL
-#define DISABLE_CAMERA_LOGGING
 #include <poglib/application.h>
 #include "game.h"
 #include "scenes/main_scene.h"

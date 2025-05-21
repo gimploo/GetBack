@@ -40,9 +40,9 @@ linux   -> ./build.sh run
     - [x] Implement a better hashtable (round robin hashing) - blocker
     - [x] Load bones and weights
     - [x] Setup animation system for the model
-    - [ ] Setup Debug view of the bones and weights 
-    - [ ] Implement movement for the model
+    - [/] Implement movement for the model
     - [ ] Implement a camera that follows the modal
+    - [ ] Setup Debug view of the bones and weights 
 - [ ] Design a GUI library (good one)
 - [ ] Helper UI in debug mode
     - [ ] Axis directions
