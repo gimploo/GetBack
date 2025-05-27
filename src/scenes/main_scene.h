@@ -3,7 +3,7 @@
 #include "poglib/util/glcamera.h"
 #include "../game.h"
 
-#define PLAYER_SPEED 0.2f
+#define PLAYER_SPEED 4.0f
 
 typedef struct {
     bool is_walking;
@@ -22,49 +22,34 @@ typedef struct {
     player_state_t state;
 } main_scene_t;
 
-matrix4f_t calculate_player_transformation(main_scene_t *game, const matrix4f_t view, const matrix4f_t proj, const vec2f_t ndc, const f32 dt)
+
+matrix4f_t calculate_player_transformation(main_scene_t *game)
 {
-    const matrix4f_t inv = glms_mat4_inv(glms_mat4_mul(proj, view));
+    vec3f_t move_dir = game->state.delta_pos;
 
-    // starts at the camera pos
-    const vec3f_t ray_direction = glms_mat4_mulv3(inv, (vec3f_t ){ndc.x, ndc.y, -1.f}, 0.f);
-    const vec3f_t ray_origin = game->camera.position;
+    // Step 1: Only rotate if there's movement input
+    if (glms_vec3_norm(move_dir) < 0.0001f) {
+        // No movement, return translation only (no rotation)
+        return glms_mat4_mul(glms_translate(MATRIX4F_IDENTITY, game->state.pos), game->state.model_scale);
+    }
 
-    const vec3f_t plane_normal = { 0.f, 1.f, 0.f };
-    const vec3f_t plane_point = { 0.f, 0.f, 0.f };
+    // Step 2: Flatten movement on XZ plane (force Y = 0) and normalize
+    move_dir.y = 0.0f;
+    move_dir = glms_normalize(move_dir);
 
-    const f32 intersection = glms_vec3_dot(
-        glms_vec3_sub(plane_point, ray_origin), 
-        plane_normal
-    ) / glms_vec3_dot(ray_direction, plane_normal);
+    // Step 3: Calculate rotation angle to face movement direction (assuming +Z forward)
+    float angle = atan2f(move_dir.x, move_dir.z);  // Note: (x, z), not (z, x)
 
-    // world space intersection point
-    const vec3f_t intersection_point = glms_vec3_add(
-        ray_origin, 
-        glms_vec3_scale(ray_direction, intersection)
-    );
+    // Step 4: Rotation around Y axis
+    matrix4f_t rot = glms_rotate_y(MATRIX4F_IDENTITY, angle);
 
-    const vec3f_t direction = glms_vec3_sub(
-        intersection_point, game->state.pos
-    );
+    // Step 5: Translation to player's position
+    matrix4f_t trans = glms_translate(MATRIX4F_IDENTITY, game->state.pos);
 
-    const f32 angle = -1.f * atan2f(direction.z, direction.x);
+    // Step 6: Combine translation and rotation
+    matrix4f_t model = glms_mat4_mul(trans, glms_mat4_mul(rot, game->state.model_scale));
 
-    const vec3f_t norm_direction = glms_vec3_normalize(direction);
-    game->state.pos = glms_vec3_add(glms_vec3_add(
-        game->state.pos, 
-        glms_vec3_scale(norm_direction, dt * PLAYER_SPEED)
-    ), game->state.delta_pos);
-
-    return glms_mat4_mul(
-        glms_translate_make(
-            game->state.pos
-        ),
-        glms_mat4_mul(
-            glms_rotate_make(angle, plane_normal),
-            game->state.model_scale
-        )
-    );
+    return model;
 }
 
 void main_scene_init(struct scene_t * s)
@@ -100,48 +85,34 @@ void main_scene_input(struct scene_t *s, const f32 dt)
     window_t *win = poggen_get_window(scene_get_engine());
     main_scene_t *content = s->content;
 
-    const f32 movement_speed = 0.3f;
-    
     //reset state
     content->state.is_walking = false;
     content->state.delta_pos = vec3f(0.f);
 
     if (window_keyboard_is_key_pressed(win, SDLK_w)) {
         content->state.is_walking = true;
-        content->state.delta_pos.z += movement_speed * dt;
+        content->state.delta_pos.z -= PLAYER_SPEED * dt;
     }
 
     if (window_keyboard_is_key_pressed(win, SDLK_s)) {
         content->state.is_walking = true;
-        content->state.delta_pos.z -= movement_speed * dt;
+        content->state.delta_pos.z += PLAYER_SPEED * dt;
     }
 
     if (window_keyboard_is_key_pressed(win, SDLK_a)) {
         content->state.is_walking = true;
-        content->state.delta_pos.x -= movement_speed * dt;
+        content->state.delta_pos.x -= PLAYER_SPEED * dt;
     }
 
     if (window_keyboard_is_key_pressed(win, SDLK_d)) {
         content->state.is_walking = true;
-        content->state.delta_pos.x += movement_speed * dt;
+        content->state.delta_pos.x += PLAYER_SPEED * dt;
     }
 
-    const matrix4f_t view = glcamera_getview(&content->camera);
-    const matrix4f_t proj = glms_perspective(
-        radians(45), 
-        global_poggen->handle.app->window.aspect_ratio, 
-        1.0f, 1000.0f
-    );
+    content->state.pos = glms_vec3_add(content->state.pos, content->state.delta_pos);
+    content->state.model_transform = calculate_player_transformation(content);
 
-    content->state.model_transform = calculate_player_transformation(
-        content, 
-        view, 
-        proj, 
-        window_mouse_get_norm_position(win),
-        dt
-    );
-
-    //glcamera_process_input(&content->camera, dt);
+    glcamera_process_input(&content->camera, dt);
 }
 
 void main_scene_update(struct scene_t *s, const f32 dt) 
