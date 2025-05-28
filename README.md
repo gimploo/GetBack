@@ -41,13 +41,16 @@ linux   -> ./build.sh run
     - [x] Load bones and weights
     - [x] Setup animation system for the model
     - [x] Implement movement for the model
-    - [ ] Implement a camera that follows the modal
-    - [ ] Setup Debug view of the bones and weights 
-- [ ] Design a GUI library (good one)
+    - [x] Implement a camera that follows the modal
+    - [ ] Include player rotation over mouse movement
 - [ ] Helper UI in debug mode
-    - [ ] Axis directions
+    - [ ] A system to see where cameras are in world space for easy debug
+    - [ ] Line drawing capabilities to know where vectors are pointing to 
+    - [ ] Axis visual indicators on the top right cornor of the screen
     - [ ] Object selection with translation and rotation
+- [ ] Design a GUI library (good one)
 - [ ] Arena allocator for better memory lookup
+- [ ] Setup Debug view of the bones and weights for models
 
 ## Bugs
 - [ ] Poggen: Relative paths doesnt work with ASSIMP, (possible fix is to write a wrapper around on how filepath are given to functions)
