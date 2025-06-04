@@ -44,7 +44,7 @@ linux   -> ./build.sh run
     - [x] Implement a camera that follows the modal
     - [ ] Include player rotation over mouse movement
 - [ ] Helper UI in debug mode
-    - [ ] A system to see where cameras are in world space for easy debug
+    - [x] A system to see where cameras are in world space for easy debug
     - [ ] Line drawing capabilities to know where vectors are pointing to 
     - [ ] Axis visual indicators on the top right cornor of the screen
     - [ ] Object selection with translation and rotation
