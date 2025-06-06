@@ -45,10 +45,11 @@ linux   -> ./build.sh run
     - [ ] Include player rotation over mouse movement
 - [ ] Helper UI in debug mode
     - [x] A system to see where cameras are in world space for easy debug
-    - [ ] Line drawing capabilities to know where vectors are pointing to 
+    - [x] Line drawing capabilities to know where vectors are pointing to 
     - [ ] Axis visual indicators on the top right cornor of the screen
-    - [ ] Object selection with translation and rotation
+- [ ] Setup lighting
 - [ ] Design a GUI library (good one)
+    - [ ] Object selection with translation and rotation
 - [ ] Arena allocator for better memory lookup
 - [ ] Setup Debug view of the bones and weights for models
 

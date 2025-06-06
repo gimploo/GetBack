@@ -55,6 +55,11 @@ matrix4f_t calculate_player_transformation(main_scene_t *game) {
     return model;
 }
 
+void workbench_setup(main_scene_t *content) 
+{
+    workbench_track_line(&content->wb, &content->player.pos);
+}
+
 void main_scene_init(struct scene_t *s) {
 #ifdef _WIN64
     const char *model_file_path =
@@ -84,6 +89,8 @@ void main_scene_init(struct scene_t *s) {
         }, 
         sizeof(main_scene_t)
     );
+
+    workbench_setup((main_scene_t *)s->content);
 }
 
 matrix4f_t get_view(main_scene_t *game) {
