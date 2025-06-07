@@ -50,7 +50,7 @@ linux   -> ./build.sh run
     - [x] A system to see where cameras are in world space for easy debug
     - [x] Line drawing capabilities to know where vectors are pointing to 
     - [ ] Axis visual indicators on the top right cornor of the screen
-    - [ ] Have mouse scroll to move the worldview camera in debug view
+    - [x] Have mouse scroll to move the worldview camera in debug view
 
 - [ ] Setup ECS for 3d (use existing implemented setup)
     - [ ] Have each object in the scene have a vectors visually represented
