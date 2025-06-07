@@ -45,6 +45,7 @@ linux   -> ./build.sh run
     - [x] Implement movement for the model
     - [x] Implement a camera that follows the modal
     - [ ] Include player rotation over mouse movement
+    - [ ] Setup Debug view of the bones and weights for models
 
 - [ ] Helper UI in debug mode
     - [x] A system to see where cameras are in world space for easy debug
@@ -52,18 +53,17 @@ linux   -> ./build.sh run
     - [ ] Axis visual indicators on the top right cornor of the screen
     - [x] Have mouse scroll to move the worldview camera in debug view
 
-- [ ] Setup ECS for 3d (use existing implemented setup)
-    - [ ] Have each object in the scene have a vectors visually represented
-    - [ ] Setup lighting
+- [ ] Setup lighting
 
-- [ ] Render terrain for the player to walk in non debug mode
+- [ ] Arena allocator for better memory lookup
 
 - [ ] Design a GUI library (good one)
     - [ ] Object selection with translation and rotation
 
-- [ ] Arena allocator for better memory lookup
+- [ ] Setup ECS for 3d (use existing implemented setup)
+    - [ ] Have each object in the scene have a vectors visually represented
 
-- [ ] Setup Debug view of the bones and weights for models
+- [ ] Render terrain for the player to walk in non debug mode
 
 ## Bugs
 - [x] Poggen: Relative paths doesnt work with ASSIMP, (possible fix is to write a wrapper around on how filepath are given to functions)
