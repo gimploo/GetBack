@@ -30,12 +30,14 @@ windows -> ./build.bat run
 linux   -> ./build.sh run
 
 
-## TODO: 
+## TODOs: 
 
 - [x] Implement a flat platform and load basic humanoid model on top of it
     - [x] Load platform
     - [x] Load humanoid model
+
 - [x] Get camera working - looking around is an absolute mess
+
 - [ ] Implement Kinematic motion control system modal
     - [x] Implement a better hashtable (round robin hashing) - blocker
     - [x] Load bones and weights
@@ -43,16 +45,26 @@ linux   -> ./build.sh run
     - [x] Implement movement for the model
     - [x] Implement a camera that follows the modal
     - [ ] Include player rotation over mouse movement
+
 - [ ] Helper UI in debug mode
     - [x] A system to see where cameras are in world space for easy debug
     - [x] Line drawing capabilities to know where vectors are pointing to 
     - [ ] Axis visual indicators on the top right cornor of the screen
-- [ ] Setup lighting
+    - [ ] Have mouse scroll to move the worldview camera in debug view
+
+- [ ] Setup ECS for 3d (use existing implemented setup)
+    - [ ] Have each object in the scene have a vectors visually represented
+    - [ ] Setup lighting
+
+- [ ] Render terrain for the player to walk in non debug mode
+
 - [ ] Design a GUI library (good one)
     - [ ] Object selection with translation and rotation
+
 - [ ] Arena allocator for better memory lookup
+
 - [ ] Setup Debug view of the bones and weights for models
 
 ## Bugs
-- [ ] Poggen: Relative paths doesnt work with ASSIMP, (possible fix is to write a wrapper around on how filepath are given to functions)
+- [x] Poggen: Relative paths doesnt work with ASSIMP, (possible fix is to write a wrapper around on how filepath are given to functions)
 

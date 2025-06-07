@@ -22,6 +22,8 @@ typedef struct {
 
     bool is_debug_view;
     player_state_t player;
+
+    str_t model_file_path;
 } main_scene_t;
 
 matrix4f_t calculate_player_transformation(main_scene_t *game) {
@@ -55,28 +57,19 @@ matrix4f_t calculate_player_transformation(main_scene_t *game) {
     return model;
 }
 
-void workbench_setup(main_scene_t *content) 
-{
-    workbench_track_line(&content->wb, &content->player.pos);
-}
-
 void main_scene_init(struct scene_t *s) {
-#ifdef _WIN64
-    const char *model_file_path =
-        "C:\\Users\\Gokul\\projects\\GetBack\\res\\male-model.glb";
-#else
-    const char *model_file_path =
-        "/home/simploo/dev/projects/GetBack/res/male-model.glb";
-#endif
+
+    str_t model_file_path = application_get_absolute_filepath(global_poggen->handle.app, "res/male-model.glb");
 
     scene_pass_content(
         s,
         &(main_scene_t){
+            .model_file_path = model_file_path,
             .model_shader =
             glshader_from_cstr_init(SHADER3D_MODEL_VS, SHADER3D_MODEL_FS),
             .wb = workbench_init(global_poggen->handle.app),
             .is_debug_view = false,
-            .model = glmodel_init(model_file_path),
+            .model = glmodel_init(model_file_path.data),
             .player = {
                 .is_walking = false,
                 .scale = glms_scale(MATRIX4F_IDENTITY,
@@ -89,32 +82,6 @@ void main_scene_init(struct scene_t *s) {
         }, 
         sizeof(main_scene_t)
     );
-
-    workbench_setup((main_scene_t *)s->content);
-}
-
-matrix4f_t get_view(main_scene_t *game) {
-    return game->is_debug_view ? glcamera_getview(&game->wb.world_camera)
-    : glcamera_getview(&game->player.camera);
-}
-
-// FIXME: this shit aint working
-vec3f_t get_direction_faced_by_mouse(main_scene_t *game) {
-    matrix4f_t view = get_view(game);
-    matrix4f_t perspective = glms_perspective(
-        radians(45), global_poggen->handle.app->window.aspect_ratio, 1.0f,
-        1000.0f);
-    vec2f_t mousepos =
-        window_mouse_get_norm_position(poggen_get_window(global_poggen));
-
-    vec3f_t mousepos_ws =
-        glms_mat4_mulv3(glms_mat4_inv(glms_mat4_mul(perspective, view)),
-                        (vec3f_t){mousepos.x, mousepos.y, -1.f}, 1.f);
-
-    const vec3f_t mousepos_dir =
-        glms_normalize(glms_vec3_sub(mousepos_ws, game->player.pos));
-
-    return mousepos_dir;
 }
 
 void main_scene_input(struct scene_t *s, const f32 dt) {
@@ -158,8 +125,7 @@ void main_scene_input(struct scene_t *s, const f32 dt) {
         content->player.pos.y + 20,
         content->player.pos.z + 120,
     };
-    content->player.camera.direction.front =
-        GL_CAMERA_DIRECTION_FRONT; // get_direction_faced_by_mouse(content);
+    content->player.camera.direction.front = GL_CAMERA_DIRECTION_FRONT;
     content->player.camera.direction.up = GL_CAMERA_DIRECTION_UP;
 
     if (content->is_debug_view) {
@@ -172,6 +138,13 @@ void main_scene_input(struct scene_t *s, const f32 dt) {
 void main_scene_update(struct scene_t *s, const f32 dt) {
     main_scene_t *content = s->content;
     if (content->is_debug_view) {
+        workbench_pass_line(
+            &content->wb,
+            (line_t) {
+                .start = content->player.camera.position,
+                .end = glms_vec3_add(content->player.camera.position, glms_vec3_scale(content->player.camera.direction.front, 3.0f))
+            }
+        );
         workbench_update_player_camera_position(
             &content->wb, 
             content->player.camera.position);
@@ -186,7 +159,7 @@ void main_scene_update(struct scene_t *s, const f32 dt) {
 void main_scene_render(struct scene_t *s, const f32 dt) {
     main_scene_t *game = (main_scene_t *)s->content;
 
-    const matrix4f_t view = get_view(game);
+    const matrix4f_t view = glcamera_getview(&game->player.camera);
     const matrix4f_t proj = glms_perspective(
         radians(45), global_poggen->handle.app->window.aspect_ratio, 1.0f,
         1000.0f);
@@ -204,7 +177,7 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                             [0] = {
                                 .name = "view", 
                                 .type = "matrix4f_t", 
-                                .value = view
+                                .value = game->is_debug_view ? glcamera_getview(&game->wb.world_camera) : view
                             },
                             [1] = {
                                 .name = "projection",
@@ -241,7 +214,7 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                             [0] = {
                                 .name = "view",
                                 .type = "matrix4f_t",
-                                .value = view
+                                .value = game->is_debug_view ? glcamera_getview(&game->wb.world_camera) : view
                             },
                             [1] = {
                                 .name = "projection",
@@ -284,4 +257,5 @@ void main_scene_destroy(scene_t *s) {
     glmodel_destroy(&game->model);
     glshader_destroy(&game->model_shader);
     workbench_destroy(&game->wb);
+    str_free(&game->model_file_path);
 }
