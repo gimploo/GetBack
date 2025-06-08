@@ -53,9 +53,10 @@ linux   -> ./build.sh run
     - [ ] Axis visual indicators on the top right cornor of the screen
     - [x] Have mouse scroll to move the worldview camera in debug view
 
-- [ ] Setup lighting
+- [/] Setup lighting
 
 - [ ] Arena allocator for better memory lookup
+    - [ ] Cleanup the filepaths held after heap allocated - maybe have a specified areans to handle string allocations
 
 - [ ] Design a GUI library (good one)
     - [ ] Object selection with translation and rotation

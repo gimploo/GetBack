@@ -4,7 +4,7 @@
 #include "poglib/util/glcamera.h"
 #include <poglib/util/workbench.h>
 
-#define PLAYER_SPEED 4.0f
+#define PLAYER_SPEED 80.0f
 
 typedef struct {
     bool is_walking;
@@ -25,7 +25,13 @@ typedef struct {
 
     gllight_t lightsource;
 
-    str_t model_file_path;
+    //FIXME: better way to get rid of these filepaths (heap allocated)
+    struct {
+        str_t model;
+        str_t model_vshader;
+        str_t model_fshader;
+    } filepaths;
+
 } main_scene_t;
 
 matrix4f_t calculate_player_transformation(main_scene_t *game) {
@@ -62,20 +68,26 @@ matrix4f_t calculate_player_transformation(main_scene_t *game) {
 void main_scene_init(struct scene_t *s) {
 
     str_t model_file_path = application_get_absolute_filepath(global_poggen->handle.app, "res/male-model.glb");
+    str_t model_file_vshader = application_get_absolute_filepath(global_poggen->handle.app, "res/male-model-shader.vs");
+    str_t model_file_fshader = application_get_absolute_filepath(global_poggen->handle.app, "res/male-model-shader.fs");
 
     scene_pass_content(
         s,
         &(main_scene_t){
-            .model_file_path = model_file_path,
+            .filepaths = {
+                .model = model_file_path,
+                .model_vshader = model_file_vshader,
+                .model_fshader = model_file_fshader,
+            },
             .lightsource = {
                 .position = (vec3f_t){
                     .x = 0.0f,
-                    .y = 5.0f,
+                    .y = 100.f,
                     .z = -2.f
                 },
-                .color = COLOR_CYAN,
+                .color = COLOR_WHITE,
             },
-            .model_shader = glshader_from_cstr_init(SHADER3D_MODEL_VS, SHADER3D_MODEL_FS),
+            .model_shader = glshader_from_file_init(model_file_vshader.data, model_file_fshader.data),
             .wb = workbench_init(global_poggen->handle.app),
             .is_debug_view = false,
             .model = glmodel_init(model_file_path.data),
@@ -166,7 +178,7 @@ void main_scene_update(struct scene_t *s, const f32 dt) {
             content->player.camera.position);
     }
     if (content->player.is_walking) {
-        glmodel_set_animation(&content->model, "Walk_Formal_Loop", dt, true);
+        glmodel_set_animation(&content->model, "Sprint_Loop", dt, true);
     } else {
         glmodel_set_animation(&content->model, "Idle_Loop", dt, true);
     }
@@ -188,7 +200,7 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                 [0] = (glshaderconfig_t){
                     .shader = &game->model_shader,
                     .uniforms = {
-                        .count = 5,
+                        .count = 7,
                         .uniform = {
                             [0] = {
                                 .name = "view", 
@@ -213,11 +225,20 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                             [4] = {
                                 .name = "uBones",
                                 .type = "matrix4f_t []",
-                                .value
-                                .mat4s = {
+                                .value.mat4s = {
                                     .count = game->model .transforms[0] .len, 
                                     .data = (matrix4f_t *)game ->model .transforms [0] .data
                                 }
+                            },
+                            [5] = {
+                                .name = "light_color",
+                                .type = "vec4f_t",
+                                .value.vec4 = game->lightsource.color
+                            },
+                            [6] = {
+                                .name = "light_position",
+                                .type = "vec3f_t",
+                                .value.vec3 = game->lightsource.position
                             }
                         }
                     }
@@ -225,7 +246,7 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                 [1] = (glshaderconfig_t){
                     .shader = &game->model_shader,
                     .uniforms = {
-                        .count = 5,
+                        .count = 7,
                         .uniform = {
                             [0] = {
                                 .name = "view",
@@ -255,6 +276,16 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                                     .count = game->model .transforms[1] .len,
                                     .data = (matrix4f_t *) game->model .transforms[1] .data
                                 }
+                            },
+                            [5] = {
+                                .name = "light_color",
+                                .type = "vec4f_t",
+                                .value.vec4 = game->lightsource.color
+                            },
+                            [6] = {
+                                .name = "light_position",
+                                .type = "vec3f_t",
+                                .value.vec3 = game->lightsource.position
                             }
                         }
                     }
@@ -273,5 +304,7 @@ void main_scene_destroy(scene_t *s) {
     glmodel_destroy(&game->model);
     glshader_destroy(&game->model_shader);
     workbench_destroy(&game->wb);
-    str_free(&game->model_file_path);
+    str_free(&game->filepaths.model);
+    str_free(&game->filepaths.model_fshader);
+    str_free(&game->filepaths.model_vshader);
 }
