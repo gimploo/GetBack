@@ -23,6 +23,8 @@ typedef struct {
     bool is_debug_view;
     player_state_t player;
 
+    gllight_t lightsource;
+
     str_t model_file_path;
 } main_scene_t;
 
@@ -65,15 +67,21 @@ void main_scene_init(struct scene_t *s) {
         s,
         &(main_scene_t){
             .model_file_path = model_file_path,
-            .model_shader =
-            glshader_from_cstr_init(SHADER3D_MODEL_VS, SHADER3D_MODEL_FS),
+            .lightsource = {
+                .position = (vec3f_t){
+                    .x = 0.0f,
+                    .y = 5.0f,
+                    .z = -2.f
+                },
+                .color = COLOR_CYAN,
+            },
+            .model_shader = glshader_from_cstr_init(SHADER3D_MODEL_VS, SHADER3D_MODEL_FS),
             .wb = workbench_init(global_poggen->handle.app),
             .is_debug_view = false,
             .model = glmodel_init(model_file_path.data),
             .player = {
                 .is_walking = false,
-                .scale = glms_scale(MATRIX4F_IDENTITY,
-                                    (vec3f_t){20.0f, 20.0f, 20.0f}),
+                .scale = glms_scale(MATRIX4F_IDENTITY, (vec3f_t){20.0f, 20.0f, 20.0f}),
                 .delta_pos = vec3f(0.f),
                 .pos = vec3f(0.f),
                 .transform = MATRIX4F_IDENTITY,
@@ -82,6 +90,10 @@ void main_scene_init(struct scene_t *s) {
         }, 
         sizeof(main_scene_t)
     );
+
+
+    main_scene_t *content = s->content;
+    workbench_track_lightsource(&content->wb, &content->lightsource);
 }
 
 void main_scene_input(struct scene_t *s, const f32 dt) {
@@ -94,6 +106,10 @@ void main_scene_input(struct scene_t *s, const f32 dt) {
 
     if (window_keyboard_is_key_just_pressed(win, SDLK_SLASH)) {
         content->is_debug_view = !content->is_debug_view;
+    }
+
+    if (content->is_debug_view && window_keyboard_is_key_just_pressed(win, SDLK_SPACE)) {
+        workbench_toggle_wireframe_mode(&content->wb);
     }
 
     if (window_keyboard_is_key_pressed(win, SDLK_w)) {
