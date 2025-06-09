@@ -14,7 +14,7 @@ uniform mat4 transform;
 uniform mat4 uBones[53];
 
 out vec3 Normal;
-out vec3 FragPos;
+out vec3 WorldPos;
 
 void main()
 {
@@ -28,7 +28,7 @@ void main()
     }
     vec4 worldPos = transform * pos;
     gl_Position = projection * view * worldPos;
-    FragPos = vec3(worldPos);
+    WorldPos = vec3(worldPos);
     Normal = vec3(skinnedNormal);
 };
 

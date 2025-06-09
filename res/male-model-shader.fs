@@ -2,15 +2,27 @@
 out vec4 FragColor;
 
 in vec3 Normal;
-in vec3 FragPos;
+in vec3 WorldPos;
 
-uniform vec3 light_position;
-uniform vec4 light_color;
-uniform vec4 diffuse_color;
+struct light_t {
+    vec3 position;
+    vec4 color;
+};
+
+struct material_t {
+    vec4 color;
+};
+
+uniform light_t light;
+uniform material_t material;
 
 void main()
 {
-    vec3 lightDirection = normalize(FragPos - light_position);
-    vec4 diffuse = max(dot(lightDirection, Normal), 0.0) * light_color;
-    FragColor = diffuse * diffuse_color;
+    //TODO: this needs to go
+    const float ambient = 0.2;
+
+    vec3 lightDirection = normalize(light.position - WorldPos);
+    float diffuse = max(dot(normalize(Normal), lightDirection), 0.0);
+    vec3 result = vec3((diffuse + ambient) * light.color * material.color);
+    FragColor = vec4(result, 1.0);
 }

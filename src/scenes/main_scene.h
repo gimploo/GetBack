@@ -10,6 +10,7 @@ typedef struct {
     bool is_walking;
     vec3f_t delta_pos;
     matrix4f_t scale;
+    vec3f_t front;
     vec3f_t pos;
     matrix4f_t transform;
     glcamera_t camera;
@@ -35,32 +36,22 @@ typedef struct {
 } main_scene_t;
 
 matrix4f_t calculate_player_transformation(main_scene_t *game) {
-    vec3f_t move_dir = game->player.delta_pos;
+    vec3f_t move_dir = glms_normalize(game->player.delta_pos);
 
-    // Step 1: Only rotate if there's movement input
     if (glms_vec3_norm(move_dir) < 0.0001f) {
-        // No movement, return translation only (no rotation)
-        return glms_mat4_mul(glms_translate(MATRIX4F_IDENTITY, game->player.pos),
-                             game->player.scale);
+        move_dir = game->player.front;
+    } else {
+        move_dir.y = 0.0f;
+        move_dir = glms_normalize(move_dir);
     }
 
-    // Step 2: Flatten movement on XZ plane (force Y = 0) and normalize
-    move_dir.y = 0.0f;
-    move_dir = glms_normalize(move_dir);
-
-    // Step 3: Calculate rotation angle to face movement direction (assuming +Z
-    // forward)
-    float angle = atan2f(move_dir.x, move_dir.z); // Note: (x, z), not (z, x)
-
-    // Step 4: Rotation around Y axis
+    float angle = atan2f(move_dir.x, move_dir.z); 
     matrix4f_t rot = glms_rotate_y(MATRIX4F_IDENTITY, angle);
-
-    // Step 5: Translation to player's position
     matrix4f_t trans = glms_translate(MATRIX4F_IDENTITY, game->player.pos);
-
-    // Step 6: Combine translation and rotation
     matrix4f_t model =
         glms_mat4_mul(trans, glms_mat4_mul(rot, game->player.scale));
+
+    game->player.front = move_dir;
 
     return model;
 }
@@ -94,6 +85,7 @@ void main_scene_init(struct scene_t *s) {
             .player = {
                 .is_walking = false,
                 .scale = glms_scale(MATRIX4F_IDENTITY, (vec3f_t){20.0f, 20.0f, 20.0f}),
+                .front = vec3f(0.f),
                 .delta_pos = vec3f(0.f),
                 .pos = vec3f(0.f),
                 .transform = MATRIX4F_IDENTITY,
@@ -218,7 +210,7 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                                 .value = game->player.transform
                             },
                             [3] = {
-                                .name = "diffuse_color",
+                                .name = "material.color",
                                 .type = "vec4f_t",
                                 .value.vec4 = *(vec4f_t *)list_get_value(&game->model .colors, 0)
                             },
@@ -231,12 +223,12 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                                 }
                             },
                             [5] = {
-                                .name = "light_color",
+                                .name = "light.color",
                                 .type = "vec4f_t",
                                 .value.vec4 = game->lightsource.color
                             },
                             [6] = {
-                                .name = "light_position",
+                                .name = "light.position",
                                 .type = "vec3f_t",
                                 .value.vec3 = game->lightsource.position
                             }
@@ -261,29 +253,28 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                             [2] = {
                                 .name = "transform",
                                 .type = "matrix4f_t",
-                                .value = game->player
-                                .transform
+                                .value = game->player.transform
                             },
                             [3] = {
-                                .name = "diffuse_color",
+                                .name = "material.color",
                                 .type = "vec4f_t",
-                                .value.vec4 = *(vec4f_t *)list_get_value(&game->model .colors, 1)
+                                .value.vec4 = *(vec4f_t *)list_get_value(&game->model.colors, 1)
                             },
                             [4] = {
                                 .name = "uBones",
                                 .type = "matrix4f_t []",
                                 .value.mat4s = {
-                                    .count = game->model .transforms[1] .len,
-                                    .data = (matrix4f_t *) game->model .transforms[1] .data
+                                    .count = game->model.transforms[1].len,
+                                    .data = (matrix4f_t *) game->model.transforms[1].data
                                 }
                             },
                             [5] = {
-                                .name = "light_color",
+                                .name = "light.color",
                                 .type = "vec4f_t",
                                 .value.vec4 = game->lightsource.color
                             },
                             [6] = {
-                                .name = "light_position",
+                                .name = "light.position",
                                 .type = "vec3f_t",
                                 .value.vec3 = game->lightsource.position
                             }
