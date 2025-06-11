@@ -23,12 +23,13 @@ void main()
     for(int i = 0; i < 4; i++) {
        if(boneIds[i] > 0) {
            pos += uBones[boneIds[i]] * vec4(vertices, 1.0) * boneWeights[i];
-           skinnedNormal += uBones[boneIds[i]] * vec4(normal, 1.0) * boneWeights[i];
+           skinnedNormal += uBones[boneIds[i]] * vec4(normal, 0.0) * boneWeights[i];
        }
     }
     vec4 worldPos = transform * pos;
     gl_Position = projection * view * worldPos;
     WorldPos = vec3(worldPos);
-    Normal = vec3(skinnedNormal);
+    Normal = vec3(transform * skinnedNormal);
+
 };
 

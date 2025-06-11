@@ -6,6 +6,7 @@ in vec3 WorldPos;
 
 struct light_t {
     vec3 position;
+    float ambient;
     vec4 color;
 };
 
@@ -18,11 +19,11 @@ uniform material_t material;
 
 void main()
 {
-    //TODO: this needs to go
-    const float ambient = 0.2;
+    vec3 norm = normalize(Normal);
 
-    vec3 lightDirection = normalize(light.position - WorldPos);
-    float diffuse = max(dot(normalize(Normal), lightDirection), 0.0);
-    vec3 result = vec3((diffuse + ambient) * light.color * material.color);
-    FragColor = vec4(result, 1.0);
+    vec3 light_direction = normalize(light.position - WorldPos);
+    float diff = max(dot(norm, light_direction), 0.0);
+    vec3 result = (light.ambient + diff) * vec3(light.color);
+
+    FragColor = vec4(result * material.color.xyz, 1.0);
 }

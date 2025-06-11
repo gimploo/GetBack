@@ -76,7 +76,8 @@ void main_scene_init(struct scene_t *s) {
                     .y = 100.f,
                     .z = -2.f
                 },
-                .color = COLOR_WHITE,
+                .color = COLOR_OFFWHITE,
+                .ambient = 0.4f
             },
             .model_shader = glshader_from_file_init(model_file_vshader.data, model_file_fshader.data),
             .wb = workbench_init(global_poggen->handle.app),
@@ -192,7 +193,7 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                 [0] = (glshaderconfig_t){
                     .shader = &game->model_shader,
                     .uniforms = {
-                        .count = 7,
+                        .count = 8,
                         .uniform = {
                             [0] = {
                                 .name = "view", 
@@ -228,9 +229,14 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                                 .value.vec4 = game->lightsource.color
                             },
                             [6] = {
+                                .name = "light.ambient",
+                                .type = "f32",
+                                .value.f32 = game->lightsource.ambient
+                            },
+                            [7] = {
                                 .name = "light.position",
                                 .type = "vec3f_t",
-                                .value.vec3 = game->lightsource.position
+                                .value.vec3 = (game->lightsource.position)
                             }
                         }
                     }
@@ -238,7 +244,7 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                 [1] = (glshaderconfig_t){
                     .shader = &game->model_shader,
                     .uniforms = {
-                        .count = 7,
+                        .count = 8,
                         .uniform = {
                             [0] = {
                                 .name = "view",
@@ -274,9 +280,14 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                                 .value.vec4 = game->lightsource.color
                             },
                             [6] = {
+                                .name = "light.ambient",
+                                .type = "f32",
+                                .value.vec4 = game->lightsource.ambient
+                            },
+                            [7] = {
                                 .name = "light.position",
                                 .type = "vec3f_t",
-                                .value.vec3 = game->lightsource.position
+                                .value.vec3 = (game->lightsource.position)
                             }
                         }
                     }

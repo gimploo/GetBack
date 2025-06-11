@@ -54,6 +54,9 @@ linux   -> ./build.sh run
     - [x] Have mouse scroll to move the worldview camera in debug view
 
 - [/] Setup lighting
+    - [x] Diffuse
+    - [x] Ambient
+    - [ ] Specular
 
 - [ ] Arena allocator for better memory lookup
     - [ ] Cleanup the filepaths held after heap allocated - maybe have a specified areans to handle string allocations
