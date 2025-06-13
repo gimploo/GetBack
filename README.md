@@ -56,13 +56,21 @@ linux   -> ./build.sh run
 - [/] Setup lighting
     - [x] Diffuse
     - [x] Ambient
+    - [ ] Attenuated light source
     - [ ] Specular
 
 - [ ] Arena allocator for better memory lookup
     - [ ] Cleanup the filepaths held after heap allocated - maybe have a specified areans to handle string allocations
 
 - [ ] Design a GUI library (good one)
+    - [ ] Simple gui tree setup
+    - [ ] button
+    - [ ] label
+    - [ ] slider
+    - [ ] textbox
     - [ ] Object selection with translation and rotation
+    - [ ] UI improvement
+        - [ ] Rounded corners
 
 - [ ] Setup ECS for 3d (use existing implemented setup)
     - [ ] Have each object in the scene have a vectors visually represented

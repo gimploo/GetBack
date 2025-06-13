@@ -77,7 +77,7 @@ void main_scene_init(struct scene_t *s) {
                     .z = -2.f
                 },
                 .color = COLOR_OFFWHITE,
-                .ambient = 0.4f
+                .ambient = 0.8f
             },
             .model_shader = glshader_from_file_init(model_file_vshader.data, model_file_fshader.data),
             .wb = workbench_init(global_poggen->handle.app),
