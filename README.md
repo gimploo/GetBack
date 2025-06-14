@@ -62,8 +62,9 @@ linux   -> ./build.sh run
 - [ ] Arena allocator for better memory lookup
     - [ ] Cleanup the filepaths held after heap allocated - maybe have a specified areans to handle string allocations
 
-- [ ] Design a GUI library (good one)
-    - [ ] Simple gui tree setup
+- [/] Design a GUI library (good one)
+    - [x] Simple gui tree setup
+    - [x] Margin and positioning
     - [ ] button
     - [ ] label
     - [ ] slider
