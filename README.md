@@ -73,6 +73,9 @@ linux   -> ./build.sh run
     - [ ] UI improvement
         - [ ] Rounded corners
 
+- [ ] Physics system
+    - [ ] Integrate animation with physics
+
 - [ ] Setup ECS for 3d (use existing implemented setup)
     - [ ] Have each object in the scene have a vectors visually represented
 

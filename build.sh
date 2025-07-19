@@ -8,7 +8,7 @@ SRC_PATH="./src/main.c"
 EXE_NAME="GetBack"
 
 CC="clang"
-FLAGS="-std=c11 -g -DDEBUG -W -Wall -Wextra -Wno-missing-braces -Wno-variadic-macros -rdynamic -Werror=incompatible-pointer-types"
+FLAGS="-std=c11 -g -g3 -O0 -DDEBUG -W -Wall -Wextra -Wno-missing-braces -Wno-variadic-macros -rdynamic -Werror=incompatible-pointer-types"
 LINKERS="-lfreetype -lSDL2 -lGLEW -lGLU -lGL -lm -lassimp"
 INCLUDES="-I/usr/include/freetype2 -I./lib/"
 
@@ -45,19 +45,6 @@ function compile_in_linux {
 
 }
 
-function gdb_debug {
-
-    if [ -f "core" ] 
-    then
-        echo -e "[*] ${blue}Core dump found, running with core dump ... ${reset}"
-        gdb --core=core --silent --tui ./bin/"$EXE_NAME"
-    else 
-        echo -e "[*] ${blue}Core Dump not found, running without core dump ... ${reset}"
-        gdb --silent --tui ./bin/"$EXE_NAME"
-    fi
-
-    return 0
-}
 
 function run_profiler {
 
@@ -156,7 +143,6 @@ function main {
     if [ "$1" == "debug" ]
     then
         echo -e "\n[*] ${blue}Running executable through debugger ...${reset}"
-        gdb_debug
         echo -e "[!] ${green}Exiting debugger ${reset}"
         exit 0
     fi
