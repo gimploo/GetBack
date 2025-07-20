@@ -166,8 +166,6 @@ void main_scene_update(struct scene_t *s, const f32 dt) {
         workbench_update_player_camera_position(&content->wb,
                                                 content->player.camera.position);
 
-        workbench_update_ui(&content->wb);
-
     }
 
     if (content->player.is_walking) {
