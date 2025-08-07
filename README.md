@@ -65,13 +65,16 @@ linux   -> ./build.sh run
 - [/] Design a GUI library (good one)
     - [x] Simple gui tree setup
     - [x] Margin and positioning
-    - [ ] button
-    - [ ] label
+    - [x] button
+    - [x] label
     - [ ] slider
     - [ ] textbox
     - [ ] Object selection with translation and rotation
     - [ ] UI improvement
         - [ ] Rounded corners
+        - [x] Padding styling
+        - [x] Margin styling
+        - [x] Layout (flexbox like)
 
 - [ ] Physics system
     - [ ] Integrate animation with physics
