@@ -156,15 +156,14 @@ void main_scene_input(struct scene_t *s, const f32 dt) {
 void main_scene_update(struct scene_t *s, const f32 dt) {
     main_scene_t *content = s->content;
     if (content->is_debug_view) {
-        workbench_pass_line(
-            &content->wb,
-            (line_t){.start = content->player.camera.position,
-                .end = glms_vec3_add(
-                    content->player.camera.position,
-                    glms_vec3_scale(content->player.camera.direction.front,
-                                    3.0f))});
-        workbench_update_player_camera_position(&content->wb,
-                                                content->player.camera.position);
+        workbench_pass_line(&content->wb, (line_t){
+            .start = content->player.camera.position, 
+            .end = glms_vec3_add(content->player.camera.position, glms_vec3_scale(content->player.camera.direction.front, 3.0f))
+        });
+        workbench_update_player_camera_position(
+            &content->wb, 
+            content->player.camera.position
+        );
 
     }
 
@@ -183,87 +182,62 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
         radians(45), global_poggen->handle.app->window.aspect_ratio, 1.0f,
         1000.0f);
 
-    glrenderer3d_draw_model(&game->model, (
-        glshaderconfiglist_t){.count = 2,
-            .configs =
-            {
-                [0] =
-                (glshaderconfig_t){.shader = &game->model_shader,
-                    .uniforms = {.count =
-                        8,
-                        .uniform = {[0] =
-                            {
+    glrenderer3d_draw_model(
+        &game->model, 
+        (glshaderconfiglist_t){
+            .count = 2,
+            .configs = {
+                [0] = (glshaderconfig_t){
+                    .shader = &game->model_shader,
+                    .uniforms = {
+                        .count = 8,
+                        .uniform = {
+                            [0] = {
                                 .name = "view",
                                 .type = "matrix4f_t",
-                                .value = game->is_debug_view ? glcamera_getview(
-                                    &game->wb
-                                    .world_camera)
-                                : view},
-                            [1] =
-                            {.name = "projection", .type = "matrix4f_t", .value = proj},
-                            [2] =
-                            {.name = "transform",
-                                .type =
-                                "matrix4f_t",
-                                .value =
-                                game->player
-                                .transform},
-                            [3] =
-                            {.name =
-                                "material.color",
-                                .type =
-                                "vec4f_t",
-                                .value
-                                .vec4 =
-                                *(vec4f_t *)list_get_value(
-                                    &game->model
-                                    .colors,
-                                    0)},
-                            [4] =
-                            {.name =
-                                "uBones",
-                                .type =
-                                "matrix4f_t []",
-                                .value
-                                .mat4s =
-                                {.count =
-                                    game->model
-                                    .transforms
-                                    [0]
-                                    .len,
-                                    .data =
-                                    (matrix4f_t
-                                    *)game
-                                    ->model
-                                    .transforms
-                                    [0]
-                                    .data}},
-                            [5] =
-                            {
+                                .value = game->is_debug_view ? glcamera_getview(&game->wb.world_camera) : view
+                            },
+                            [1] = {
+                                .name = "projection", 
+                                .type = "matrix4f_t", 
+                                .value = proj
+                            },
+                            [2] = {
+                                .name = "transform",
+                                .type = "matrix4f_t",
+                                .value = game->player.transform
+                            },
+                            [3] = {
+                                .name = "material.color",
+                                .type = "vec4f_t",
+                                .value.vec4 = *(vec4f_t *)list_get_value( &game->model .colors, 0)
+                            },
+                            [4] = {
+                                .name = "uBones", 
+                                .type = "matrix4f_t []",
+                                .value.mat4s = {
+                                    .count = game->model.transforms[0].len, 
+                                    .data = (matrix4f_t *)game->model.transforms[0].data
+                                }
+                            },
+                            [5] = {
                                 .name = "light.color",
                                 .type = "vec4f_t",
-                                .value
-                                .vec4 =
-                                game->lightsource
-                                .color},
-                            [6] =
-                            {.name =
-                                "light.ambient",
-                                .type =
-                                "f32",
-                                .value
-                                .f32 =
-                                game->lightsource
-                                .ambient},
-                            [7] =
-                            {.name =
-                                "light.position",
-                                .type =
-                                "vec3f_t",
-                                .value
-                                .vec3 =
-                                (game->lightsource
-                                .position)}}}},
+                                .value.vec4 = game->lightsource.color
+                            },
+                            [6] = {
+                                .name = "light.ambient",
+                                .type = "f32",
+                                .value.f32 = game->lightsource.ambient
+                            },
+                            [7] = {
+                                .name = "light.position",
+                                .type = "vec3f_t",
+                                .value.vec3 =(game->lightsource.position)
+                            }
+                        }
+                    }
+                },
                 [1] = (glshaderconfig_t){
                     .shader =
                     &game->model_shader,
@@ -338,14 +312,15 @@ void main_scene_render(struct scene_t *s, const f32 dt) {
                                 .value
                                 .vec3 =
                                 (game->lightsource
-                                .position)}}}}}});
+                                .position)}}}}}}, game->wb.render_config.wireframe_mode);
 
     if (game->is_debug_view) {
         workbench_render(&game->wb);
     }
 }
 
-void main_scene_destroy(scene_t *s) {
+void main_scene_destroy(scene_t *s) 
+{
     main_scene_t *game = (main_scene_t *)s->content;
     glmodel_destroy(&game->model);
     glshader_destroy(&game->model_shader);

@@ -67,6 +67,7 @@ linux   -> ./build.sh run
     - [x] Margin and positioning
     - [x] button
     - [x] label
+    - [ ] checkbox
     - [ ] slider
     - [ ] textbox
     - [ ] Object selection with translation and rotation
