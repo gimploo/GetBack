@@ -67,11 +67,11 @@ linux   -> ./build.sh run
     - [x] Margin and positioning
     - [x] button
     - [x] label
-    - [ ] checkbox
-    - [ ] slider
+    - [x] checkbox
+    - [/] slider
     - [ ] textbox
     - [ ] Object selection with translation and rotation
-    - [ ] UI improvement
+    - [/] UI improvement
         - [ ] Rounded corners
         - [x] Padding styling
         - [x] Margin styling
