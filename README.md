@@ -68,7 +68,7 @@ linux   -> ./build.sh run
     - [x] button
     - [x] label
     - [x] checkbox
-    - [/] slider
+    - [x] slider
     - [ ] textbox
     - [ ] Object selection with translation and rotation
     - [/] UI improvement
