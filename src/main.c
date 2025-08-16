@@ -1,4 +1,5 @@
 #define WINDOW_SDL
+#define DISABLE_CAMERA_LOGGING
 #include <poglib/application.h>
 #include "game.h"
 #include "scenes/main_scene.h"
@@ -27,7 +28,6 @@ void GetBack_update(application_t *app)
     window_t *win = application_get_window(app);
     content_t *c = application_get_content(app);
 
-    window_update_user_input(win);
     poggen_update(c->game.engine, application_get_dt(app));
 }
 
